@@ -1,64 +1,24 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Table, Tag} from 'antd';
+import axios from 'axios';
 
-let data = [
-  {
-    key:1,
-    players: 8,
-    game: "League of legends",
-    playTime: 500,
-    genre: "MOBA",
-    platforms: ["PC"],
-  },
-  {
-    key:2,
-    players: 7,
-    game: "World of warcraft",
-    playTime: 1500,
-    genre: "MMORPG",
-    platforms: ["PC"],
-  },
-  {
-    key:3,
-    players: 1,
-    game: "The last of us 2",
-    playTime: 100,
-    genre: "FPS",
-    platforms: ["PS4", "PC"],
-  },
-  {
-    key:4,
-    players: 7,
-    game: "Hearthstone",
-    playTime: 1000,
-    genre: "Card Game",
-    platforms: ["PC"],
-  },
-  {
-    key:5,
-    players: 7,
-    game: "FIFA 2020",
-    playTime: 2000,
-    genre: "Sport",
-    platforms: ["PC", "PS4", "XBOX"],
-  },
-  {
-    key:6,
-    players: 2,
-    game: "Among Us",
-    playTime: 5000,
-    genre: "Multiplayer",
-    platforms: ["PC", "Android"],
-  },
-  {
-    key:7,
-    players: 2,
-    game: "Valorant",
-    playTime: 2000,
-    genre: "FPS",
-    platforms: ["PC"],
-  },
-];
+
+const fetchData = (genre, platform) => {
+  return axios.get('http://localhost:7000/select_top_by_playtime',
+          {
+            params:{
+              genre,
+              platform
+            }
+          })
+          .then((res)=>{
+              return res.data.games;
+          })
+          .catch((err)=>{
+            console.error(err);
+          });
+};
+
 
 const columns = [
     {
@@ -103,9 +63,19 @@ const columns = [
 ]
 
 export default function GamesListingTable() {
+
+  const [games, setGames] = useState([]);
+  const [genre, setGenre] = useState(null);
+  const [platform, setPlatform] = useState(null);
+  
+  useEffect(() => {
+      fetchData(genre,platform).then(games=>{
+        setGames(games);
+      });
+    }, [])
     return (
         <div>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={games} rowKey="game" />
         </div>
     )
 }

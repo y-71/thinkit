@@ -1,10 +1,10 @@
 import './App.css';
-import GamesListingTable from './components/GamesListingTable';
+import Feed from './components/Feed';
 
 function App() {
   return (
     <div className="App">
-      <GamesListingTable/>
+      <Feed/>
     </div>
   );
 }
